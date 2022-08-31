@@ -43,3 +43,19 @@ To use the access token from your Docker CLI client:
 Finally to push the image to docker hub
 
 > docker push vikashkr117/test-docker
+
+To remove image "test-inference"
+
+> docker rmi test-inference
+
+docker run --rm -it testimg results
+
+
+https://timm.fast.ai/
+
+
+Reduced size by specifying "+cpu" using packages 
+
+torch==1.12.1+cpu
+
+torchvision==0.13.1+cpu

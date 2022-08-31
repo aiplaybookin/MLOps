@@ -1,0 +1,15 @@
+FROM python:3.9-slim AS compile-image
+
+WORKDIR /opt/src
+
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+COPY . .
+
+FROM python:3.9-slim AS runtime-image
+COPY --from=compile-image /opt/src /opt/src
+
+WORKDIR /opt/src
+
+ENTRYPOINT ["python3", "inference2.py"]
