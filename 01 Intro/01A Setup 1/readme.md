@@ -62,7 +62,7 @@ torchvision==0.13.1+cpu
 
 
 docker ps -a
-docker logs <ID> # get ID from above and see console outputs
+docker logs <ID> # get ID from above and see console outpu
 
 FROM ubuntu:latest
 RUN_OUT=$(docker build -t testimg .)
