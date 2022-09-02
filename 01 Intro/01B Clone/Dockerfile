@@ -4,7 +4,7 @@ WORKDIR /opt/src
 
 COPY requirements.txt requirements.txt
 
-RUN pip3 install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install -r requirements.txt
 
 COPY . .
 

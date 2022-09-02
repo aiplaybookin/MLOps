@@ -1,43 +1,81 @@
+# Docker
 
+## 💡Use Gitpod, Codespace, Server or Local machine with Docker installed
+Create an account buddy
 
-# Docker 
+## 💡💡Link account in Docker Hub
+
+To push to [Docker hub](https://hub.docker.com) repository ( to be usd by other teams/ people - public or private )
+
+Sign in to docker hub with your account (say username is : vikashkr117)
+
+Create a access token and save the password (say access from gitpod IDE )
+
+When logging in from your Docker CLI client (say, Gitpod), use this token as a password.
+
+To login to Docker Hub
+```
+docker login
+```
+provide 
+
+username : <vikashkr117>
+
+password : <docker hub access token which you created and saved>
 
 ## How to run ?
 
-Clone this repo using `Play with Docker` or `Gitpod`
+Clone this repo using `Play with Docker` or `Gitpod` etc or in local with docker installed 
 
 Build a docker file
 ```
-docker build --tag classify-image .
+docker build --tag vikashkr117/pytorchmodel-basic-inference .
 ```
 
-###Who is 🐘 here..
+### Who is 🐘 here 
 ```
-docker image history classify-image
+docker image history vikashkr117/pytorchmodel-basic-inference
 ```
 
 To run docker (here using default params db.IMAGE & db.MODEL)
 ```
-docker run --rm classify-image
+docker run --rm vikashkr117/pytorchmodel-basic-inference
 ```
 
-To run docker (here custom image link)
+To run docker (custom 🐈 image link)
 ```
-docker run --rm classify-image db.IMAGE=https://oneworldoneocean.com/wp-content/uploads/2020/07/4975959919_155d6ebb2b_z.jpg
+docker run --rm vikashkr117/pytorchmodel-basic-inference db.IMAGE=https://pbs.twimg.com/profile_images/664169149002874880/z1fmxo00_400x400.jpg
 ```
-
-To push to Docker hub repository [ to be usd by other teams/ people - public or private ]
-
-Sign in to docker hub with your account [say username is : vikashkr117]
-Create a repository in docker hub [say : test-docker]
-Create a access token and save the password [say access from gitpod IDE ]
-
-When logging in from your Docker CLI client, use this token as a password.
-
-
+<img src="images/image_param.png" width="128"/>
 
 To remove any dangling builds/images, stopped containers
 ```
 docker system prune
 ```
 
+
+
+## Appendix
+
+### Libraries to try 
+1. [Facebook's Hydra](https://hydra.cc/docs/intro/) [Github](https://github.com/facebookresearch/hydra)
+2. https://github.com/pallets/click
+3. https://github.com/tiangolo/typer
+
+### Disable terminal text outputs
+1. Use **logging library** 
+
+### Dockerfile
+```
+FROM python:3.9-slim
+
+WORKDIR /opt/src
+
+COPY requirements.txt requirements.txt
+
+RUN pip3 install -r requirements.txt
+
+COPY . .
+
+ENTRYPOINT ["python3", "my_app.py"]
+```

@@ -1,0 +1,3 @@
+db:
+  MODEL: resnet18
+  IMAGE: https://github.com/pytorch/hub/raw/master/images/dog.jpg
