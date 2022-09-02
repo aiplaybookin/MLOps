@@ -11,7 +11,7 @@ Build a docker file
 docker build --tag classify-image .
 ```
 
-To see the size of the intermediate stages (Now you know who is 🐘 here)
+###Who is 🐘 here..
 ```
 docker image history classify-image
 ```
