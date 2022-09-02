@@ -8,4 +8,4 @@ RUN pip3 install -r requirements.txt -f https://download.pytorch.org/whl/torch_s
 
 COPY . .
 
-ENTRYPOINT ["python3", "inference2.py"]
+ENTRYPOINT ["python3", "my_app.py"]

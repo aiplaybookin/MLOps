@@ -1,0 +1,3 @@
+db:
+  MODEL: coat_tiny
+  IMAGE: https://github.com/pytorch/hub/raw/master/images/dog.jpg

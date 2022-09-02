@@ -1,0 +1,1 @@
+[2022-08-31 14:04:09,468][timm.models.helpers][INFO] - Loading pretrained weights from url (https://github.com/rwightman/pytorch-image-models/releases/download/v0.1-coat-weights/coat_tiny-473c2a20.pth)

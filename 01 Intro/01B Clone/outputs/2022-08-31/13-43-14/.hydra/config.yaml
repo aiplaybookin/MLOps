@@ -1,0 +1,3 @@
+db:
+  MODEL: mysql
+  IMAGE: omry
