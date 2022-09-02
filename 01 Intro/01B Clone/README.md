@@ -46,7 +46,7 @@ To run docker (custom 🐈 image link)
 ```
 docker run --rm vikashkr117/pytorchmodel-basic-inference db.IMAGE=https://pbs.twimg.com/profile_images/664169149002874880/z1fmxo00_400x400.jpg
 ```
-<img src="images/image_param.png" width="128"/>
+<img src="images/image_param.png" />
 
 To remove any dangling builds/images, stopped containers
 ```
