@@ -1,7 +1,7 @@
 # Docker
 
 ## 💡Use Gitpod, Codespace, Server or Local machine with Docker installed
-Create an account buddy
+First create an account buddy
 
 ## 💡💡Link account in Docker Hub
 
@@ -17,11 +17,7 @@ To login to Docker Hub
 ```
 docker login
 ```
-provide 
-
-username : <vikashkr117>
-
-password : <docker hub access token which you created and saved>
+<img src="images/docker_login.png" />
 
 ## How to run ?
 
@@ -36,17 +32,37 @@ docker build --tag vikashkr117/pytorchmodel-basic-inference .
 ```
 docker image history vikashkr117/pytorchmodel-basic-inference
 ```
+<img src="images/history.png" />
 
 To run docker (here using default params db.IMAGE & db.MODEL)
 ```
 docker run --rm vikashkr117/pytorchmodel-basic-inference
 ```
+<img src="images/run.png" />
 
 To run docker (custom 🐈 image link)
 ```
 docker run --rm vikashkr117/pytorchmodel-basic-inference db.IMAGE=https://pbs.twimg.com/profile_images/664169149002874880/z1fmxo00_400x400.jpg
 ```
 <img src="images/image_param.png" />
+
+To run test cases
+```
+bash ./tests/all_tests.sh
+```
+<img src="images/test_cases.png" />
+
+<img src="images/autograde.png" />
+
+
+To push to docker hub
+```
+docker push vikashkr117/pytorchmodel-basic-inference
+```
+<img src="images/docker_push.png" />
+
+<img src="images/dockerhub.png" />
+
 
 To remove any dangling builds/images, stopped containers
 ```
@@ -64,18 +80,3 @@ docker system prune
 
 ### Disable terminal text outputs
 1. Use **logging library** 
-
-### Dockerfile
-```
-FROM python:3.9-slim
-
-WORKDIR /opt/src
-
-COPY requirements.txt requirements.txt
-
-RUN pip3 install -r requirements.txt
-
-COPY . .
-
-ENTRYPOINT ["python3", "my_app.py"]
-```
