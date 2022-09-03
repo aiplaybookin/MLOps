@@ -9,9 +9,9 @@ sudo curl -o /usr/local/bin/cog -L https://github.com/replicate/cog/releases/lat
 sudo chmod +x /usr/local/bin/cog
 ```
 
-## 🚀 a classification model from timm 
+## 🚀 Classification model from timm 
 
-Create a **cog.yaml** file
+1. Create a **cog.yaml** file
 ```
 build:
   python_version: "3.10"
@@ -22,33 +22,34 @@ build:
 predict: "predict.py:Predictor"
 ```
 
-1. Make predict.py
-2. Placing json file of classes label and ids
-3. Get image from internet to make inference
+2. Make predict.py
+3. Placing json file of classes label and ids
+4. Get image from internet to make inference
 ```
 IMAGE_URL=https://gist.githubusercontent.com/bfirsh/3c2115692682ae260932a67d93fd94a8/raw/56b19f53f7643bb6c0b822c410c366c3a6244de2/mystery.jpg
 curl $IMAGE_URL > input.jpg
 ```
-4. make prediction
+5. make prediction
 ```
 cog predict -i image=@input.jpg
 ```
 NOTE : The first time you run cog predict, the build process will be triggered to generate a Docker container that can run your model. The next time you run cog predict the pre-built container will be used.
 
-Alternatively **better build image first** by (same as docker command, with no dot)-
+6. Alternatively **better build image first** by (same as docker command, with no dot)-
 ```
 cog build -t <imagename>
 ```
-Call for prediction -
+
+7. Call for prediction -
 ```
 cog predict <imagename> -i image=@input.jpg
-``
+```
 
-
-5. Generate **Dockerfile** This could also be used as starter dockerfile ( it tries to use multistage docker)
+8. Generate **Dockerfile** This could also be used as starter dockerfile ( it tries to use multistage docker)
 ```
 cog debug dockerfile > Dockerfile
 ```
+
 ➕✨ Best Part of COG:  No more CUDA hell. Cog knows which CUDA/cuDNN/PyTorch/Tensorflow/Python combos are compatible and will set it all up correctly for you.
 
 ### Reference 
