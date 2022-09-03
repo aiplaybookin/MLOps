@@ -1,6 +1,6 @@
 [Pytorch Lightning](https://www.pytorchlightning.ai)
 
-
+## Why Pytorch Lightning? 🤔
 <img src="images/whypytorchlightning.png" />
 
 ### 💡 There are no .cuda() or .to(device) calls required. Lightning does these for us.
