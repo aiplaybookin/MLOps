@@ -67,7 +67,22 @@ To remove any dangling builds/images, stopped containers
 docker system prune
 ```
 
+To volume mount (1st method is preferred)
+```
+docker run -it --volume `pwd`:/opt/src ubuntu bash
+```
+#### Or
+```
+docker run -it --mount type=bind,source=`pwd`,target=/opt/src ubuntu bash
+```
 
+Make it read only
+```
+docker run -it --volume `pwd`:/opt/src:ro ubuntu bash
+```
+```
+docker run -it --mount type=bind,source=`pwd`,target=/opt/src,readonly ubuntu bash
+```
 
 ## Appendix
 
@@ -78,3 +93,13 @@ docker system prune
 
 ### Disable terminal text outputs
 1. Use **logging library** 
+
+### Reference to use lower size Docker
+1. [Multistage Docker](https://pythonspeed.com/articles/multi-stage-docker-python/)
+2. [Example Dockerfile - cpu/gpu](https://github.com/zironycho/pytorch-docker)
+
+Reduce by removing whl file post installation by having **rm** command in dockerfile -
+```
+RUN pip3 install -r requirements.txt \
+    && rm -rf /root/.cache/pip
+``
