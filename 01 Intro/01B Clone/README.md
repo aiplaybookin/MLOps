@@ -52,8 +52,6 @@ bash ./tests/all_tests.sh
 ```
 <img src="images/test_cases.png" />
 
-<img src="images/autograde.png" />
-
 
 To push to docker hub
 ```
