@@ -2,6 +2,14 @@
 
 Makes very easy to ship ML/DL models to production **by making Dockerfile effortlessly**
 
+cog run actually calls docker run (syntax similar to docker)
+
+1️⃣ Current volume will be mounted automatically to running conatiner
+
+2️⃣ If you specified use cuda or use gpus =true, these gpus are passed to running container
+
+✨ Best Part of COG:  No more CUDA hell. Cog knows which CUDA/cuDNN/PyTorch/Tensorflow/Python combos are compatible and will set it all up correctly for you.
+
 Assuming we have docker ( and Im using gitpod here)
 Install
 ```
@@ -50,7 +58,6 @@ cog predict <imagename> -i image=@input.jpg
 cog debug dockerfile > Dockerfile
 ```
 
-➕✨ Best Part of COG:  No more CUDA hell. Cog knows which CUDA/cuDNN/PyTorch/Tensorflow/Python combos are compatible and will set it all up correctly for you.
 
 ### Reference 
 https://github.com/replicate/cog/blob/main/docs/getting-started.md
