@@ -1,4 +1,4 @@
-# Scope of Tools/platforms (not all may be used)
+# Scope of Tools/platforms 
 
 1. Play With Docker: https://labs.play-with-docker.com/
 
@@ -11,3 +11,5 @@
 Gitpod https://www.gitpod.io/
 
 Goormide https://ide.goorm.io
+
+5. Docker hub account (for docker repo )

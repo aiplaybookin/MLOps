@@ -64,7 +64,9 @@ torchvision==0.13.1+cpu
 docker ps -a
 docker logs <ID> # get ID from above and see console outpu
 
-FROM ubuntu:latest
-RUN_OUT=$(docker build -t testimg .)
-python3 -c "import json; json.loads('$RUN_OUT')"
+### References 
+1. https://www.cloudbees.com/blog/the-basics-of-the-docker-run-command
+
+2. [Oriellys session](https://github.com/nsadawi/DockerLinReg)- ppt explaination, examples
+
 
