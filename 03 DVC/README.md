@@ -1,0 +1,2 @@
+git LFS
+git annex
