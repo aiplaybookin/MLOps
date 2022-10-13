@@ -123,12 +123,12 @@ ssh -i testApp.pem ubuntu@<yourPublicIPv4Address>
 
 **NEVER EVER SHARE YOUR** ```~/.ssh/id_rsa file```, it has the private key to your system and then anyone can ssh to your system if they have the private key.
 
-1. Get the public key
+1. Get the public key (local machine terminal)
 ```
 cat ~/.ssh/id_rsa.pub
 ```
 
-OR creating public key for our local system or Generating public/private rsa key pair.
+OR creating public key for our local system or Generating public/private rsa key pair. **Only once in your local machine**
 ```
 ssh-keygen
 ```
@@ -150,9 +150,14 @@ ssh ubuntu@<ip_address>
 
 #### VSCode Editor
 
-Open VS Code Editor, Ctrl+Shft+P (Windows) or Cmd+Shft+P (Mac) and select ```Connect to current Window to Host```
+Open VS Code Editor, Ctrl+Shft+P (Windows) or Cmd+Shft+P (Mac) 
 
-```Ctrl + ~``` to use terminal inside VSCode Editor
+1. Make sure you have **Remote - SSH extension** installed
+2. Select ```Connect to current Window to Host```
+3. Just type *ubuntu@<ip address>* to ssh
+4. ```Ctrl + ~``` to use terminal inside VSCode Editor
+
+🤗🧑‍💻
 
 #### TMUX
 - To keep sessions running
@@ -412,7 +417,7 @@ There are two types of Repository, Public and Private
 
 <img src="images/ecr_image.png" />
 
-## ECS 
+## ECS Cluster
 
 Amazon Elastic Container Service → Create cluster
 
@@ -441,28 +446,151 @@ Now,
 
 ### Deploy
 
-- Go to Cluster which we created, click **deploy**
-- Compute configuration -> Capacity provider -> Choose ```Fargate Spot```
-- Deployment Configuration -> ```Select Service```
+- Go to Cluster which we created, click ```Deploy```
+- ***Compute configuration*** -> Capacity provider -> Choose ```Fargate Spot```
+- ***Deployment Configuration*** -> Select ```Service```
     - Service : Launch a group of tasks handling a long-running computing work that can be stopped and restarted. For example, a web application.
     - Task : Launch a standalone task that runs and terminates. For example, a batch job.
 - Specify the Task deifinition name (e.g. TimmInferenceTask) in Family text box with tags
 - Specify Service Name, e.g. TimmService
-- Security Group : Must select security group defined earlier with port enabled (e.g. testsg with port 7860)
-- Public IP is ON
+- ***Security Group*** : Must select security group defined earlier with port enabled (e.g. testsg with port 7860)
+- ***Public IP*** is ```ON```
 - Load Balancer - not needed here (when you expect huge volume of requests) 
     - Application LB
     - Network Load Balancer
-- Hit Deploy, wait for few minutes
-- NOTE : Go to Service -> Networking -> Service Role -> Add S3 full access to get access to s3 working in this group
+- Hit ```Deploy```, wait for few minutes
+
+NOTE : Go to Service -> Networking -> Service Role -> Add S3 full access to get access to s3 working in this group
+
 - Got to Cluster-> Tasks (running one) -> click on task id hex -> Get Public IP
-- In browser <Public IP>:7860 , you app should run here!!
+- In browser ```Public IP:7860``` , you app should run here!!
 
 
-# Deploy CIFAR10
+### Deploy CIFAR10 
+
+#### 1. Develop and Test on EC2 first!
+
+1. Install ```boto3``` to access model placed in S3 bucket.
+
+```
+sudo apt-get install pip3
+sudo apt-get install python3-pip
+
+sudo pip3 install boto3
+```
+
+2. Install ```gradio```
+```
+sudo pip3 install gradio
+```
+
+3. Install 
+```
+sudo pip3 install --extra-index-url https://download.pytorch.org/whl/cpu torch==1.11.0+cpu
+sudo pip3 install --extra-index-url https://download.pytorch.org/whl/cpu torchvision==0.12.0+cpu
+```
+
+4. Test locally by running ```python3 infer/inference.py```
+
+5. Prepare a ```reqirements.txt``` and ```Dockerfile```
+
+6. Build a docker and test
+```
+docker build --tag test-app .
+```
+
+```
+docker run -it -p 7860:7860 test-app
+```
+
+docker container run --rm -it test-app /bin/sh
 
 
+#### 2. Create repo in ECR
 
+There are two types of Repository, Public and Private
+
+1. Go to AWS ECR, Create a *Public repository*
+2. Provide the repo name, descriptions 
+3. Select *Linux*
+4. Select Architecture - *x86* and *x86-64*
+5. Hit 'Create'
+
+Check -
+
+- Go to EC2 instance IAM roles and attach policy
+ -- EC2 conatiner full accesss
+ -- Elastic conatiner registry Public full Access
+
+
+#### 3. Push Docker image from EC2
+
+Click on ```View Push Commands``` on public repo page which you created in ```step 2 Create repo in ECR```
+
+- Run 1 st command to login from EC2
+- 2nd command Docker build ```docker build -t cifar-fargate-app .```  (OR USE DOCKER NAME BUILD PREVIOUSLY)
+- 3rd command ```docker tag cifar-fargate-app:latest public.ecr.aws/o8u9e4v2/cifar-fargate-app:latest``` copy and run
+- 4th command ```docker push public.ecr.aws/o8u9e4v2/cifar-fargate-app:latest``` to Push, copy and run
+
+<img src="images/push_commands.png" />
+
+#### 4. ECS Cluster and Task
+
+1. Amazon Elastic Container Service → Create cluster
+
+This will initially create a cluster where we can add containers as deployment. It creates few IAM Roles for itself so takes some time.
+
+- Go to ECS and click create cluster
+
+- Give an name and leave network and other settings as is
+
+- Hit 'Create'
+
+- Your cluster is automatically configured for AWS Fargate (serverless) with two capacity providers. Add Amazon EC2 instances, or external instances using ECS Anywhere.
+
+- If fails, logout login again create.
+
+Note : Till here there is no services deployed or task running on clusters.
+
+2. Next, ***Create a Task Definition*** under ECS
+
+- Go to ECS--> Task Definition -> Create new Task Definition
+
+- Give name to task e.g. CifarInferenceTask
+
+- Give name to repo, and get URI of repo and paste in *Image URI*, Get repo URI from ECR as see below
+<img src="images/repo_uri.png" />
+
+- Change / add port e.g. 7860 if required
+
+- Env variables, if any
+
+- Specify the ```task size``` CPU, Memory as required by app
+
+- Task roles, network mode - conditional for S3 access etc
+
+- Uncheck logging if you do not wish (it is also charged $)
+
+- Create Task, Done!!
+
+3. Deploy
+
+- Go to Cluster created in step 1 above and click **Deploy**
+- Compute configuration -> Capacity provider -> Choose Fargate Spot
+- Deployment Configuration -> Select Service
+- Service : Launch a group of tasks handling a long-running computing work that can be stopped and restarted. For example, a web application.
+Task : Launch a standalone task that runs and terminates. For example, a batch job.
+Specify the Task deifinition name (e.g. TimmInferenceTask) in Family text box with tags
+Specify Service Name, e.g. TimmService
+Security Group : Must select security group defined earlier with port enabled (e.g. testsg with port 7860)
+Public IP is ON
+Load Balancer - not needed here (when you expect huge volume of requests)
+Application LB
+Network Load Balancer
+Hit Deploy, wait for few minutes
+NOTE : Go to Service -> Networking -> Service Role -> Add S3 full access to get access to s3 working in this group
+Got to Cluster-> Tasks (running one) -> click on task id hex -> Get Public IP
+In browser :7860 , you app should run here!!
 # General Notes/ Bonus -
 
 - Check Prices (Usually US Oregon region is cheaper )

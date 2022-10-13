@@ -18,9 +18,13 @@ Reference implemetation in repo https://github.com/aiplaybookin/lightning-hydra-
 
 - Torch Script vrs Trace
 
-## 05 AWS Core
+## 05 AWS - Training & Deployments
 
-- EC2 Spot Instances, S3, EKS, Lambda, Kinesis, Firehose, Sagemaker
+- EC2 
+- S3
+- ECS
+- ECR
+- Spot Instances, EKS, Lambda, Kinesis, Firehose, Sagemaker
 
 ## 06 Distributed Training and Case Study
 
