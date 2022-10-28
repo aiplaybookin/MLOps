@@ -142,3 +142,64 @@ We may not have access to GPUs Spot instance, then we must request for them (thi
 
 
 
+### Launch an EC2 Instance
+
+ssh from local
+```
+ssh -i <>.pem ubuntu@<Public IP of EC2>
+```
+
+From Local get your public keys (use ```ssh-keygen```, if not available)
+```
+cat ~/.ssh/id_rsa.pub
+```
+
+In EC2 instance
+```
+vim ~/.ssh/authourized_keys
+```
+
+#### When wish to copy from one instance to another
+
+1. Copy and paste public keys from small instance to gpu instance to fetch the code
+2.  
+
+rsync -r --info=progress2 lightning-hydra-template ubuntu@<Public IP of GPU>:~/
+
+
+### Run in 1 GPU instance 
+e.g. ```g4dn.xlarge```
+
+1. Launch the instance 
+
+2. List the environments available and go to pytorch one
+
+```
+conda env list
+source activate pytorch
+```
+3. Git clone the repo
+```
+git clone https://github.com/aiplaybookin/lightning-hydra-template.git
+```
+
+4. Change the config->experiment->cifar.yaml : ```- override /trainer: gpu.yaml```
+
+5. Change the config->datamodule->cifar10.yaml : ```num_workers: 4```
+
+
+
+
+Run nvidia smi every 0.5 sec ```watch -n 0.5 nvidia-smi``` 
+
+Kill a previous orphan process, go check
+```ps -ef | grep python``` and ```nvidia-smi``` later 
+
+```kill -9 <PID>```
+
+
+Ray : 
+Create instance , yaml file for aws for instances. setup iam roles, copy code , 
+
+slurm 
+
