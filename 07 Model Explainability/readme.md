@@ -1,3 +1,11 @@
+<table align="center"><tr><td align="center" width="9999">
+<img src="images/model.png" align="center" width="150" alt="Project icon">
+# Model Explainability
+
+Description for my awesome project
+</td></tr></table>
+
+
 ## Integrated Gradients
 
 Intro Paper: *Axiomatic Attribution for Deep Networks* [Read here](https://arxiv.org/abs/1703.01365)
