@@ -3,7 +3,7 @@
 # Model Explainability
 
 Survey of different ways of model explainability in Computer Vision
-<img src="images/model.png" align="center" ">
+<img src="images/model.png" align="center" >
 </td></tr></table>
 
 
