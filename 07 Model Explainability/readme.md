@@ -1,8 +1,9 @@
 <table align="center"><tr><td align="center" width="9999">
-<img src="images/model.png" align="center" width="150" alt="Project icon">
+<img src="images/model.png" align="center" ">
+
 # Model Explainability
 
-Description for my awesome project
+Survey of different ways of model explainability in Computer Vision
 </td></tr></table>
 
 
