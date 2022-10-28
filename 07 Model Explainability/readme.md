@@ -1,9 +1,9 @@
 <table align="center"><tr><td align="center" width="9999">
-<img src="images/model.png" align="center" ">
 
 # Model Explainability
 
 Survey of different ways of model explainability in Computer Vision
+<img src="images/model.png" align="center" ">
 </td></tr></table>
 
 
