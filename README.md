@@ -32,12 +32,12 @@ Reference implemetation in repo https://github.com/aiplaybookin/lightning-hydra-
 
 ## 08 Model Serving with Torch Serve
 
-## 09 Train on Habana Chips and Deployment on Accelerators (AWS Inf) and Serverless Inference
+## 09 Deployment on Accelerators (AWS Inf) and Serverless Inference
 
-## 10 Deployment on Edge Devices (RPI, Jetson)
+## 10 Deployment on Edge Devices (Jetson nano)
 
-## 11 Kubeflow, Sagemaker Pipelines and Kafka
+## 11 Model and Data Drift
 
-## 12 Model and Data Drift
+## 12 Kubeflow, Sagemaker Pipelines and Kafka
 
 ## 13 CI/CD Pipeline with AWS/Jenkins

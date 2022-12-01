@@ -1,4 +1,9 @@
 # Distributed Training
+
+## Need
+- Faster training
+- Acccomodate large models like GPT ( different parts are trained on different machines)
+
 Training in multiple GPUs has 2 assets -
 
 - Model
@@ -27,7 +32,7 @@ Shared model
 
 Pytorch implementation. [Read more](https://pytorch.org/docs/stable/nn.html#module-torch.nn.parallel)
 
-DP splits a batch across k GPUs. That is, if you have a batch of 32 and use DP with 2 gpus, each GPU will process 16 samples, after which the root node will aggregate the results.
+DP *splits a batch across k GPUs*. That is, if you have a batch of 32 and use DP with 2 gpus, each GPU will process 16 samples, after which the root node will aggregate the results.
 
 #### *Weights are averaged and send to all GPUs in order to sync the model. Gradients unctouched at master during model sync.*
 
@@ -51,6 +56,7 @@ DP accumulates gradients to the same ```.grad``` field, while DDP first use ```a
 - Each process performs a full forward and backward pass in parallel.
 - The gradients are synced and averaged across all processes.
 - Each process updates its optimizer.
+
 ```
 from torch.nn.parallel import DistributedDataParallel as DDP
 
@@ -202,4 +208,167 @@ Ray :
 Create instance , yaml file for aws for instances. setup iam roles, copy code , 
 
 slurm 
+
+## Others
+
+- Generally set 2 workers per CPU, so that we have better utilization to create batch and fed to GPUs. GPU might process faster than CPU.
+
+# Steps : -
+
+1. Lanch EC2 instance
+
+2. Name multi-gpu-training
+
+3. OS image ```Ubuntu``` Deep Learning AMI GPU Pythorch 1.12.1
+
+4. Instance Type (choose from acclerated compute, eg. )
+
+```g4dn.xlarge```
+
+5. Select the existing kep pair (or create and save a new one)
+
+6. Security group - existing one (or create one)
+
+7. Storage - minimum gb will show up, we will keep as is.
+
+8. Click on Advance & Select ```Request Spot Instances```
+
+9. Launch!
+
+10. Local machine terminal do ssh ```ssh -i file.pem ubuntu@<ip address>```
+
+11. Get code from git 
+```
+git clone https://github.com/aiplaybookin/lightning-hydra-template.git
+```
+
+13. Deep learning Pytorch Ubuntu image comes with pytorch venv. Check the env list and use pytorch one.
+```
+conda env list
+
+source activate pytorch
+```
+May be check version of pytorch
+
+14. Go to the cloned folder and install the packages from requirements.txt
+```
+pip install -r requirements.txt
+```
+
+15. 
+
+### For single node GPU Training
+
+a. Change the config->experiment->cifar.yaml : ```- override /trainer: gpu.yaml```. Specify devices in gpu.yaml as per the gpus available.
+
+b. Change the config->datamodule->cifar10.yaml : ```num_workers: 4``` . (as per number of cpus)
+
+c. Run training ```python3 src/train.py experiment=cifar```
+
+### For DDP GPU Training
+
+Change config->experiment->cifar.yaml : ```- override /trainer: ddp.yaml```
+
+Change the config->datamodule->cifar10.yaml : ```num_workers: 4``` 
+Change the config->trainer->ddp.yaml : ```devices: 1``` as i had only 1 gpu per instance
+
+
+python3 src/train.py experiment=cifar trainer.default_root_dir=$(date +%Y-%m-%d_%H-%M-%S) callbacks.model_checkpoint.dirpath=logs/train/runs 
+
+
+### For Multi node Multi GPU training
+
+A1. Create multi node instances say 2, eacg ```g4dn.xlarge``` (See step above, just need to add 2 or more instances)
+
+Security group should have -
+```Type: Custom TCP```     ```Port range : 1000-65535``` for communication between nodes
+
+SSH from local machine
+
+source activate pytorch
+
+Install tmux
+```
+cd
+git clone https://github.com/gpakosz/.tmux.git
+ln -s -f .tmux/.tmux.conf
+cp .tmux/.tmux.conf.local .
+```
+
+Create tmux session
+```
+tmux new -s work
+```
+
+Clone the repo in both
+```
+git clone https://github.com/aiplaybookin/lightning-hydra-template.git
+```
+
+cd lightning-hydra-template
+
+pip install -r requirements.txt
+
+When logging on epoch level in distributed setting to accumulate the metric across devices. e.g. 
+self.log('train/acc', ..., ```sync_dist=True```)
+
+NOTE : Both should have same code /files
+
+change the batch size to 256
+
+change min/ max epoch to 
+
+logger=tensorboard
+
+Comment code for test in node num >0
+
+
+
+Master Node, can change port and try. Private IP addr
+
+Use ```hostname``` to get Private IPv4 addresses 
+```
+MASTER_PORT=29500 MASTER_ADDR=<Private IPv4 addresses> WORLD_SIZE=2 NODE_RANK=0 python src/train.py trainer=ddp trainer.devices=1 trainer.num_nodes=2
+```
+
+MASTER_PORT=29500 MASTER_ADDR=172.31.31.106 WORLD_SIZE=2 NODE_RANK=0 python src/train.py trainer=ddp trainer.devices=1 trainer.num_nodes=2 trainer.default_root_dir=$(date +%Y-%m-%d_%H-%M-%S) callbacks.model_checkpoint.dirpath=logs/train/runs 
+
+MASTER_PORT=29500 MASTER_ADDR=172.31.31.106 WORLD_SIZE=2 NODE_RANK=1 python src/train.py trainer=ddp trainer.devices=1 trainer.num_nodes=2 trainer.default_root_dir=$(date +%Y-%m-%d_%H-%M-%S) callbacks.model_checkpoint.dirpath=logs/train/runs 
+
+trainer.max_epochs=2
+
+MASTER_PORT=29500 MASTER_ADDR=172.31.47.238 WORLD_SIZE=2 NODE_RANK=0 python src/train.py trainer=ddp trainer.devices=1 trainer.max_epochs=2 trainer.num_nodes=2 trainer.default_root_dir=$(date +%Y-%m-%d_%H-%M-%S) callbacks.model_checkpoint.dirpath=logs/train/runs 
+
+MASTER_PORT=29500 MASTER_ADDR=172.31.47.238 WORLD_SIZE=2 NODE_RANK=1 python src/train.py trainer=ddp trainer.devices=1 trainer.max_epochs=2 trainer.num_nodes=2 trainer.default_root_dir=$(date +%Y-%m-%d_%H-%M-%S) callbacks.model_checkpoint.dirpath=logs/train/runs
+
+While Running epoch Output can be seen on master node
+
+Use tmux sessions
+[Refer](https://github.com/aiplaybookin/MLOps/tree/main/05%20AWS%20Deployment#TMUX)
+
+
+
+- Increase the batch size (highest batch_size possible for both strategies)
+- Change the model name to "vit_base_patch32_224"
+- Store best checkpoint of both to AWS S3
+
+
+
+
+World size = num of GPUs x number of nodes
+
+Same seed should be used in all nodes
+
+
+Run nvidia smi every 0.5 sec ```watch -n 0.5 nvidia-smi``` 
+
+Kill a previous orphan process, go check
+```ps -ef | grep python``` and ```nvidia-smi``` later 
+
+```kill -9 <PID>```
+
+
+us-east-1
+
+ap-south-1
 
