@@ -2,9 +2,9 @@
 
 ***Video***
 
-[Yolo-tiny on Jetson nano]()
+[Yolo-tiny on Jetson nano](https://youtu.be/GPZsdEFRfq8)
 
-[Yolo on Jetson nano]()
+[Yolo on Jetson nano](https://youtu.be/0j0eQue9olc)
 
 ***FPS***
 <img src="images/FPS.png" />
