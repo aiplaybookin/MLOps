@@ -38,6 +38,8 @@ Reference implemetation in repo https://github.com/aiplaybookin/lightning-hydra-
 
 ## 11 Model and Data Drift
 
-## 12 Kubeflow, Sagemaker Pipelines and Kafka
+## 12 AWS Serverless Best Practices
 
-## 13 CI/CD Pipeline with AWS/Jenkins
+## 13 Kubeflow, Sagemaker Pipelines and Kafka
+
+## 14 CI/CD Pipeline with AWS/Jenkins
